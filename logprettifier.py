@@ -18,6 +18,7 @@ def print_markdown(logData):
 			}
 			print ('* %(action)s `%(file)s`' % {"action": fileActions.get(change["action"]), "file": change["file"]}).encode('utf-8')
 
+# TODO: Make this usable as an option
 def print_json(logData):
 	return json.dumps(logData)
 
@@ -38,6 +39,7 @@ def parse_svn_xml(file_path):
 				"changeset":	entry.getAttribute('revision'),
 				"message":		entry.getElementsByTagName('msg').item(0).firstChild.nodeValue,
 				"author":		entry.getElementsByTagName('author').item(0).firstChild.nodeValue,
+				# TODO: This should probably just take the time string. That way we know its format will be consistent when we parse it on the other end.
 				"date":			tmpdate.astimezone(pytz.timezone('Australia/Melbourne')).strftime("%A, %d %B %Y at %H:%M:%S (%Z)"),
 				"files":		[]
 			})
@@ -55,5 +57,6 @@ if(len(sys.argv) > 1):
 	# TODO: handle this (And switching modes!) more elegantly.
 	print(print_markdown(parse_svn_xml(sys.argv[1])))
 else:
+	# TODO: Print help?
 	print('# Error')
 	print('No arguments passed! Please give me a log file to parse.')
