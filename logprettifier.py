@@ -21,6 +21,7 @@ def print_markdown(logData):
 def print_json(logData):
 	return json.dumps(logData)
 
+# TODO: Handle missing/malformed string portions in the parse function
 def parse_svn_xml(file_path):
 
 	dom = minidom.parse(file_path)
