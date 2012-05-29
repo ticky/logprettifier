@@ -12,22 +12,32 @@ from xml.dom import minidom
 
 # TODO: Make this return a nicely-formatted string, rather than print directly
 def print_markdown(logData):
+
 	for entry in logData:
+
 		# TODO: Do a better job of dealing with special characters and newlines
 		tmpdate = dateutil.parser.parse(entry["date"])
+
 		print (
 			'\n### r*%(revision)s*: **%(logMessage)s**' %
 			{
-				"revision":		entry["changeset"],
-				"logMessage":	entry["message"].replace("*", "\\*").replace("\n"," ")
+				"revision":		markdown_escape(entry["changeset"]),
+				"logMessage":	markdown_escape(entry["message"])
 			}
 		).encode('utf-8')
 
+		numFiles = len(entry["files"])
+		if(numFiles == 1):
+			fileStr = "%i file" % numFiles
+		else:
+			fileStr = "%i files" % numFiles
+
 		print (
-			'Submitted by %(author)s on %(date)s.\n' %
+			'**%(author)s** modified **%(files)s** on **%(date)s**.\n' %
 			{
-				"author":	entry["author"],
-				"date":		tmpdate.astimezone(pytz.timezone('Australia/Melbourne')).strftime("%A, %d %B %Y at %H:%M:%S (%Z)")
+				"author":	markdown_escape(entry["author"]),
+				"files":	markdown_escape(fileStr),
+				"date":		markdown_escape(tmpdate.astimezone(pytz.timezone('Australia/Melbourne')).strftime("%A, %d %B %Y at %H:%M:%S (%Z)"))
 			}
 		).encode('utf-8')
 
@@ -40,11 +50,24 @@ def print_markdown(logData):
 					"R":	"Replaced"
 			}
 
-			print ('* %(action)s `%(file)s`' % {"action": fileActions.get(change["action"]), "file": change["file"]}).encode('utf-8')
+			print (
+				'* %(action)s `%(file)s`' %
+				{
+					"action":	fileActions.get(change["action"]),
+					"file":		markdown_escape(change["file"])
+				}
+			).encode('utf-8')
+
+	return ''
 
 # TODO: Make this usable as an option
 def print_json(logData):
+
 	return json.dumps(logData)
+
+def markdown_escape(inputString):
+
+	return inputString.replace("\\", "\\\\").replace("`","\\`").replace("*", "\\*").replace("_", "\\_").replace("-", "\\-").replace("+", "\\+").replace("!", "\\!")
 
 # TODO: Handle missing/malformed string portions in the parse function
 def parse_svn_xml(file_path):
@@ -75,7 +98,6 @@ def parse_svn_xml(file_path):
 	return svnLogObject
 
 # TODO: Make this run happily in a CGI environment
-
 if(len(sys.argv) > 1):
 	# TODO: handle this (And switching modes!) more elegantly
 	#		http://docs.python.org/library/argparse.html
