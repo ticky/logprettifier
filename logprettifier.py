@@ -1,21 +1,45 @@
+#!/usr/bin/env python
+
+# logprettifier.py
+# Takes source control logs and turns them into either Markdown (Default)
+# or JSON for further processing or use in web apps.
+
 import dateutil.parser
 import json
 import pytz
 import sys
 from xml.dom import minidom
 
-# TODO: Make this return a nicely-formatted string, rather than print directly.
+# TODO: Make this return a nicely-formatted string, rather than print directly
 def print_markdown(logData):
 	for entry in logData:
-		print ('\n### r*%(revision)s*: **%(logMessage)s**' % {"revision": entry["changeset"], "logMessage": entry["message"]}).encode('utf-8')
-		print ('Submitted by %(author)s on %(date)s.\n' % {"author": entry["author"], "date": entry["date"]}).encode('utf-8')
+		# TODO: Do a better job of dealing with special characters and newlines
+		tmpdate = dateutil.parser.parse(entry["date"])
+		print (
+			'\n### r*%(revision)s*: **%(logMessage)s**' %
+			{
+				"revision":		entry["changeset"],
+				"logMessage":	entry["message"].replace("*", "\\*").replace("\n"," ")
+			}
+		).encode('utf-8')
+
+		print (
+			'Submitted by %(author)s on %(date)s.\n' %
+			{
+				"author":	entry["author"],
+				"date":		tmpdate.astimezone(pytz.timezone('Australia/Melbourne')).strftime("%A, %d %B %Y at %H:%M:%S (%Z)")
+			}
+		).encode('utf-8')
+
 		for change in entry["files"]:
+
 			fileActions = {
 					"A":	"Added",
 					"D":	"Deleted",
 					"M":	"Modified",
 					"R":	"Replaced"
 			}
+
 			print ('* %(action)s `%(file)s`' % {"action": fileActions.get(change["action"]), "file": change["file"]}).encode('utf-8')
 
 # TODO: Make this usable as an option
@@ -33,14 +57,11 @@ def parse_svn_xml(file_path):
 
 		if(entry.getElementsByTagName('msg').item(0).firstChild):
 
-			tmpdate = dateutil.parser.parse(entry.getElementsByTagName('date').item(0).firstChild.nodeValue)
-
 			svnLogObject.append({
 				"changeset":	entry.getAttribute('revision'),
 				"message":		entry.getElementsByTagName('msg').item(0).firstChild.nodeValue,
 				"author":		entry.getElementsByTagName('author').item(0).firstChild.nodeValue,
-				# TODO: This should probably just take the time string. That way we know its format will be consistent when we parse it on the other end.
-				"date":			tmpdate.astimezone(pytz.timezone('Australia/Melbourne')).strftime("%A, %d %B %Y at %H:%M:%S (%Z)"),
+				"date":			entry.getElementsByTagName('date').item(0).firstChild.nodeValue,
 				"files":		[]
 			})
 
@@ -53,8 +74,11 @@ def parse_svn_xml(file_path):
 
 	return svnLogObject
 
+# TODO: Make this run happily in a CGI environment
+
 if(len(sys.argv) > 1):
-	# TODO: handle this (And switching modes!) more elegantly.
+	# TODO: handle this (And switching modes!) more elegantly
+	#		http://docs.python.org/library/argparse.html
 	print(print_markdown(parse_svn_xml(sys.argv[1])))
 else:
 	# TODO: Print help?
