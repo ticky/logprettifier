@@ -10,21 +10,22 @@ import pytz
 import sys
 from xml.dom import minidom
 
-# TODO: Make this return a nicely-formatted string, rather than print directly
 def print_markdown(logData):
+
+	markdownLog = []
 
 	for entry in logData:
 
-		# TODO: Do a better job of dealing with special characters and newlines
+		# TODO: Do a better job of dealing and newlines (split then iterate?)
 		tmpdate = dateutil.parser.parse(entry["date"])
 
-		print (
-			'\n### r*%(revision)s*: **%(logMessage)s**' %
+		markdownLog.append(
+			'### r*%(revision)s*: **%(logMessage)s**' %
 			{
 				"revision":		markdown_escape(entry["changeset"]),
 				"logMessage":	markdown_escape(entry["message"])
 			}
-		).encode('utf-8')
+		)
 
 		numFiles = len(entry["files"])
 		if(numFiles == 1):
@@ -32,14 +33,16 @@ def print_markdown(logData):
 		else:
 			fileStr = "%i files" % numFiles
 
-		print (
-			'**%(author)s** modified **%(files)s** on **%(date)s**.\n' %
+		markdownLog.append(
+			'**%(author)s** modified **%(files)s** on **%(date)s**' %
 			{
 				"author":	markdown_escape(entry["author"]),
 				"files":	markdown_escape(fileStr),
 				"date":		markdown_escape(tmpdate.astimezone(pytz.timezone('Australia/Melbourne')).strftime("%A, %d %B %Y at %H:%M:%S (%Z)"))
 			}
-		).encode('utf-8')
+		)
+
+		markdownLog.append('')
 
 		for change in entry["files"]:
 
@@ -50,15 +53,17 @@ def print_markdown(logData):
 					"R":	"Replaced"
 			}
 
-			print (
+			markdownLog.append(
 				'* %(action)s `%(file)s`' %
 				{
 					"action":	fileActions.get(change["action"]),
-					"file":		markdown_escape(change["file"])
+					"file":		change["file"]
 				}
-			).encode('utf-8')
+			)
 
-	return ''
+		markdownLog.append('\n') # Put two newlines between this and the next entry.
+
+	return '\n'.join(markdownLog).encode('utf-8')
 
 # TODO: Make this usable as an option
 def print_json(logData):
@@ -67,7 +72,7 @@ def print_json(logData):
 
 def markdown_escape(inputString):
 
-	return inputString.replace("\\", "\\\\").replace("`","\\`").replace("*", "\\*").replace("_", "\\_").replace("-", "\\-").replace("+", "\\+").replace("!", "\\!")
+	return inputString.replace("\\", "\\\\").replace("`","\\`").replace("*", "\\*").replace("_", "\\_").replace("-", "\\-").replace("+", "\\+").replace(".", "\\.").replace("!", "\\!")
 
 # TODO: Handle missing/malformed string portions in the parse function
 def parse_svn_xml(file_path):
