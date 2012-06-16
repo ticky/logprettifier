@@ -1,0 +1,16 @@
+{
+	"eventSources": [
+		{
+			"prettyName": 	"Colloquy Project Subversion",
+			"name": 		"colloquy",
+			"kind": 		"svn",
+			"uri":			"http://source.colloquy.info/svn/trunk"
+		},
+		{
+			"prettyName":	"Log Prettifier Github",
+			"name":			"logprettifier",
+			"kind":			"git",
+			"uri":			"https://github.com/ticky/logprettifier.git"
+		}
+	]
+}
