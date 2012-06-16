@@ -4,6 +4,12 @@
 # Takes source control logs and turns them into either Markdown (Default)
 # or JSON for further processing or use in web apps.
 
+# Parameters (Not yet implemented)
+# - repo: the repo name specified in the config file. A shortcut to a username and password combination, essentially.
+# - url: the URL of the repository to scan
+# - username: the username to use on the repository
+# - password: the password to use on the repository
+
 import dateutil.parser
 import json
 import pytz
@@ -218,7 +224,7 @@ def parse_svn_xml(file_path):
 
 # CGI: Header(s)
 print "X-Powered-By: Python"
-print "Content-Type: text/html"
+# print "Content-Type: application/json"
 # CGI: Blank Line to separate Headers and Content
 print ""
 # CGI: Output
