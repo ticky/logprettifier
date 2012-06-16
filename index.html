@@ -2,10 +2,15 @@
 <head>
     <title>Log Prettifier</title>
     <script type="text/javascript" src="app.js"></script>
+    <style type="text/css">
+        #loader {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Log Prettifier</h1>
-    <input id="reloaddatabutton" type="button" value="Reload Data"/>
+    <input id="reloaddatabutton" type="button" value="Reload Data" /><img id="loader" src="loader.gif" alt="" />
     <ul id="log">
         <li>Need to load items first.</li>
     </ul>

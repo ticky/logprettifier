@@ -15,6 +15,7 @@ function callback () {
         eventItem.appendChild(eventUL);
         logObject.appendChild(eventItem);
     }
+    document.getElementById("loader").style.display = "none";
 }
 
 function getJSON (url) {
@@ -30,6 +31,7 @@ function getJSON (url) {
 }
 
 function loadData () {
+    document.getElementById("loader").style.display = "inline";
     getJSON("/logprettifier.py");
 }
 

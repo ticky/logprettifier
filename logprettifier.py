@@ -115,8 +115,8 @@ def get_svn_data():
 
 # CGI: Header(s)
 print "X-Powered-By: Python"
-print "Content-Type: text/html"
-# print "Content-Type: application/json"
+# print "Content-Type: text/html"
+print "Content-Type: application/json"
 # CGI: Blank Line to separate Headers and Content
 print ""
 # CGI: Output
