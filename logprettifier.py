@@ -5,10 +5,8 @@
 # or JSON for further processing or use in web apps.
 
 # Parameters (Not yet implemented)
-# - repo: the repo name specified in the config file. A shortcut to a username and password combination, essentially.
-# - url: the URL of the repository to scan
-# - username: the username to use on the repository
-# - password: the password to use on the repository
+# - repo: the repo name specified in the config file.
+#         (Note: when unspecified, all enabled repos are fetched.)
 
 import dateutil.parser
 import json

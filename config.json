@@ -4,13 +4,25 @@
 			"prettyName": 	"Colloquy Project Subversion",
 			"name": 		"colloquy",
 			"kind": 		"svn",
-			"uri":			"http://source.colloquy.info/svn/trunk"
+			"uri":			"http://source.colloquy.info/svn/trunk",
+			"enabled":		true
 		},
 		{
 			"prettyName":	"Log Prettifier Github",
 			"name":			"logprettifier",
 			"kind":			"git",
-			"uri":			"https://github.com/ticky/logprettifier.git"
+			"uri":			"https://github.com/ticky/logprettifier.git",
+			"localPath":	"/Volumes/Macintosh HD/Users/ticky/Repositories/logprettifier",
+			"enabled":		false
+		}
+	],
+	"userMapping": [
+		{
+			"name": ["Geoff Stokes"],
+			"usernames": [
+				"geoff@geoffstokes.net",
+				"stokesg"
+			]
 		}
 	]
 }
