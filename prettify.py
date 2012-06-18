@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# logprettifier.py
+# prettify.py
 # Retrieves multiple source control logs, combines them and converts to JSON for
 # further processing or use in web apps.
 
@@ -21,6 +21,7 @@ from xml.dom import minidom
 import json
 
 # CGI Utilities
+import Gatekeeper
 import cgitb
 cgitb.enable()
 
@@ -66,14 +67,6 @@ def get_svn_data():
 
     return svnLogObject
 
-# TODO: Write a simple CGI wrapper allowing for a buffer to be written to before
-#       flushing as response.
-# CGI: Header(s)
-print "X-Powered-By: Python"
-# print "Content-Type: text/html"
-print "Content-Type: application/json"
-# CGI: Blank Line to separate Headers and Content
-print ""
-
-# CGI: Output
-print(json.dumps(get_svn_data()))
+cgi = Gatekeeper.Gatekeeper()
+cgi.addHeader("Content-Type", "application/json")
+cgi.addBody(json.dumps(get_svn_data()))
