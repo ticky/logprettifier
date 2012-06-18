@@ -24,6 +24,7 @@ import json
 import Gatekeeper
 import cgitb
 cgitb.enable()
+cgi = Gatekeeper.Gatekeeper()
 
 # TODO: Turn this into a class with constructors and useful OO things so it can
 #       be re-used and expanded upon.
@@ -67,6 +68,5 @@ def get_svn_data():
 
     return svnLogObject
 
-cgi = Gatekeeper.Gatekeeper()
-cgi.addHeader("Content-Type", "application/json")
 cgi.addBody(json.dumps(get_svn_data()))
+cgi.addHeader("Content-Type", "application/json")
